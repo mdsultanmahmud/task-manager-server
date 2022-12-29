@@ -106,6 +106,26 @@ async function run() {
             const result = await AllTask.updateOne(filter, updateDoc, option)
             res.send(result)
         })
+
+        app.patch('/editedTask/:id', async (req, res) => {
+            const id = req.params.id
+            const editedTask = req.body 
+            const filter = {
+                _id: ObjectId(id)
+            }
+            const option = { upsert: true }
+            const updateDoc = {
+                $set: {
+                    taskName: editedTask.EditedTaskName,
+                    endingDate: editedTask.EditedEndingDate,
+                    taskDescription: editedTask.EditedTaskDescription,
+                    imgURL: editedTask.EditedImgURL,
+                    time: editedTask.EditedTime
+                }
+            }
+            const result = await AllTask.updateOne(filter, updateDoc, option)
+            res.send(result)
+        })
     }
     catch {
 
