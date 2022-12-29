@@ -25,6 +25,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run() {
     try {
         const AllTask = client.db('TaskManager').collection('alltask')
+        const Comments = client.db('TaskManager').collection('comments')
         app.post('/alltask', async (req, res) => {
             const task = req.body
             const result = await AllTask.insertOne(task)
@@ -124,6 +125,13 @@ async function run() {
                 }
             }
             const result = await AllTask.updateOne(filter, updateDoc, option)
+            res.send(result)
+        })
+
+        // play with comments 
+        app.post('/comments', async(req,res) =>{
+            const comment = req.body 
+            const result = await Comments.insertOne(comment)
             res.send(result)
         })
     }
