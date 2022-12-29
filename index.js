@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 const port = 5000
 const cors = require('cors')
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 // username:Task_Manager
 // password:l22nvLd0mbIff8Ij
 //middlewear
@@ -35,9 +35,18 @@ async function run() {
             const filter = {
                 email: query.email
             }
-            console.log(filter)
             const cursor = await AllTask.find(query).toArray()
             res.send(cursor)
+        })
+
+        app.delete('/alltask/:id', async(req, res) =>{
+            const id = req.params.id
+            const filter = {
+                _id: ObjectId(id)
+            }
+            const result = await AllTask.deleteOne(filter)
+            res.send(result)
+            
         })
     }
     catch {
