@@ -36,9 +36,19 @@ async function run() {
                 email: query?.email,
                 completeStatus: false 
             }
-            console.log(filter)
-            const cursor = await AllTask.find(filter).toArray()
-            res.send(cursor)
+            const cursor = await AllTask.find(filter).sort({
+                time: -1
+            }).toArray()
+            res.send(cursor)    
+        })
+        // create single task api 
+        app.get('/alltask/:id', async(req, res) =>{
+            const id = req.params.id 
+            const filter = {
+                _id: ObjectId(id)
+            }
+            const result = await AllTask.findOne(filter)
+            res.send(result)
         })
         // create api from incomplete to complete task 
         app.patch('/alltask/:id', async (req, res) => {
@@ -75,7 +85,25 @@ async function run() {
                 email: email,
                 completeStatus: true
             }
-            const result = await AllTask.find(filter).toArray()
+            const result = await AllTask.find(filter).sort({
+                time: -1
+            }).toArray()
+            res.send(result)
+        })
+
+        // update completed task to incompleted task
+        app.patch('/complete/:id', async (req, res) => {
+            const id = req.params.id
+            const filter = {
+                _id: ObjectId(id)
+            }
+            const option = { upsert: true }
+            const updateDoc = {
+                $set: {
+                    completeStatus: false
+                }
+            }
+            const result = await AllTask.updateOne(filter, updateDoc, option)
             res.send(result)
         })
     }
